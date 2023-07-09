@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+        - name: ui-container
+          image: your-registry/ui:latest
+          ports:
+            - containerPort: 4200
+          volumeMounts:
+            - name: ui-volume
+              mountPath: /app/ui
+      volumes:
+        - name: ui-volume
+          hostPath:
+            path: /path/to/ui

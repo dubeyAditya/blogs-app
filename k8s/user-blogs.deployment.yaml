@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-blogs-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-blogs
+  template:
+    metadata:
+      labels:
+        app: user-blogs
+    spec:
+      containers:
+        - name: user-blogs-container
+          image: your-registry/user-blogs:latest
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: user-blogs-volume
+              mountPath: /usr/src/app
+        - name: rabbitmq-container
+          image: rabbitmq
+          ports:
+            - containerPort: 5672
+          volumeMounts:
+            - name: user-blogs-volume
+              mountPath: /usr/src/app
+        - name: auth-container
+          image: your-registry/auth:latest
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: user-blogs-volume
+              mountPath: /usr/src/app
+      volumes:
+        - name: user-blogs-volume
+          hostPath:
+            path: /path/to/backend/apps/user-blogs
